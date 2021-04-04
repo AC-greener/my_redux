@@ -38,7 +38,7 @@ const User = ({state}) => {
   return <div>用户:{state.user.name}</div>
 }
 
-const createWrapper = (Component) => {
+const connect = (Component) => {
   const Wrapper = () => {
     const {appState, setAppState} = useContext(appContext)
     const dispatch = (action) => {
@@ -62,7 +62,7 @@ const UserModifier = ({state, dispatch}) => {
   )
 }
 
-const UserModifierWrapper = createWrapper(UserModifier)
-const UserWrapper = createWrapper(User)
+const UserModifierWrapper = connect(UserModifier)
+const UserWrapper = connect(User)
 
 export default App
