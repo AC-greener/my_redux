@@ -56,49 +56,52 @@ console.log('C 执行了', Math.random())
  return <section>C组件</section>
 }
 
-const User = ({state}) => {
+const User = ({user}) => {
   console.log('User 执行了',  Math.random())
   
-  return <div>用户:{state.user.name}</div>
+  return <div>用户:{user.name}</div>
 }
 
 
-const UserModifier = ({state, dispatch, children}) => {
+const UserModifier = ({user, updateUser, children}) => {
   const onChange = (e) => {
-    dispatch({type: 'updateUser', payload: {name: e.target.value}})
+    updateUser({name: e.target.value})
   }
-  console.log('UserModifier 执行了', Math.random()  )
+  console.log('UserModifier 执行了', Math.random())
   return (
       <div>
         {children}
-        <input value={state.user.name} onChange={onChange}/>
-    
+        <input value={user.name} onChange={onChange}/>
       </div>
   )
 }
 
-const Book = ({state, dispatch}) => {
+const Book = ({book, dispatch}) => {
+  console.log(dispatch)
   console.log('book执行了')
   return (
     <div>
       Book 组件
-      <input value={state.book.name} onChange={(e) => {
+      <input value={book.name} onChange={(e) => {
         dispatch({type: 'updateBook', payload: {name: e.target.value}})
       }}/>
     </div>
   )
 }
 
-const UserModifierWrapper = connect((state) => {
+const mapStateToProps = (state) => {
   return {
     user: state.user,
   }
-})(UserModifier) 
-const UserWrapper = connect((state) => {
+}
+const mapDispatchToProps = (dispatch) => {
   return {
-    user: state.user
+    updateUser: (payload) => dispatch({type: 'updateUser', payload}),
   }
-})(User)
+}
+const UserModifierWrapper = connect(mapStateToProps, mapDispatchToProps)(UserModifier) 
+const UserWrapper = connect(mapStateToProps)(User)
+
 const BookWrapper = connect((state) => {
   return {
     book: state.book

@@ -34,24 +34,26 @@ const changed = (oldState, newState) => {
   return changed
 }
 
-export const connect = (selector) => (Component) => {
+export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => {
   return (props) => {
     const {state, setState} = useContext(appContext)
+    const dispatch = (action) => {
+      setState(store.reducer(state, action))
+    }
     const [, update] = useState({})
-    const data = selector ? selector(state) : state
+    const data = mapStateToProps ? mapStateToProps(state) : {state}
+    const dispatchers = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch}
     useEffect(() => {
       return store.subscribe(() => {
-        const newData =  selector ? selector(store.state) : store.state
+        const newData =  mapStateToProps ? mapStateToProps(store.state) : store.state
         console.log(changed(data, newData))
         if(changed(data, newData)) {
           update({})
         }
       })  
     }, [])
-    const dispatch = (action) => {
-      setState(store.reducer(state, action))
-    }
-    return <Component {...props} state={data} dispatch={dispatch} />
+
+    return <Component {...props} {...data} {...dispatchers} />
   }
 }
 export const Provider = ({store, children}) => {
