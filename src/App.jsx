@@ -16,7 +16,9 @@ const reducer = (state, {type, payload}) => {
   }
 }
 const initState = {
-  user: { name: 'zhangsan', age: 18 }
+  user: { name: 'zhangsan', age: 18 },
+  book: [],
+  movie: []
 }
 const store = createStore(initState, reducer)
  const App = () => {
@@ -45,6 +47,7 @@ console.log('C 执行了', Math.random())
 
 const User = ({state}) => {
   console.log('User 执行了',  Math.random())
+  
   return <div>用户:{state.user.name}</div>
 }
 
@@ -54,6 +57,7 @@ const UserModifier = ({state, dispatch, children}) => {
     dispatch({type: 'updateUser', payload: {name: e.target.value}})
   }
   console.log('UserModifier 执行了', Math.random()  )
+  console.log('state',  state)
   return (
       <div>
         {children}
@@ -62,7 +66,11 @@ const UserModifier = ({state, dispatch, children}) => {
   )
 }
 
-const UserModifierWrapper = connect(UserModifier)
-const UserWrapper = connect(User)
+const UserModifierWrapper = connect((state) => {
+  return {
+    user: state.user
+  }
+})(UserModifier) 
+const UserWrapper = connect(null)(User)
 
 export default App
