@@ -59,8 +59,10 @@ const User = ({state}) => {
 const connect = (Component) => {
   return (props) => {
     const {state, setState} = useContext(appContext)
+    const [, update] = useState({})
     const dispatch = (action) => {
       setState(reducer(state, action))
+      update({})
     }
     return <Component {...props} state={state} dispatch={dispatch} />
   }
