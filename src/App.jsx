@@ -15,14 +15,22 @@ const reducer = (state, {type, payload}) => {
   }
 }
 
+const store = {
+  state: {
+    user: { name: 'zhangsan', age: 18 }
+  },
+  setState(newState) {
+    console.log(newState)
+    store.state = newState
+  }
+}
+
 const appContext = React.createContext(null)
 
  const App = () => {
-  const [appState, setAppState] = useState({
-    user: { name: 'zhangsan', age: 18 }
-  })
+
   return (
-    <appContext.Provider value={{appState, setAppState}}>
+    <appContext.Provider value={store}>
       <A/>
       <B/>
       <C/>
@@ -50,11 +58,11 @@ const User = ({state}) => {
 
 const connect = (Component) => {
   return (props) => {
-    const {appState, setAppState} = useContext(appContext)
+    const {state, setState} = useContext(appContext)
     const dispatch = (action) => {
-      setAppState(reducer(appState, action))
+      setState(reducer(state, action))
     }
-    return <Component {...props} state={appState} dispatch={dispatch} />
+    return <Component {...props} state={state} dispatch={dispatch} />
   }
 }
 
