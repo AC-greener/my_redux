@@ -1,13 +1,13 @@
 import React, {useState, useContext} from 'react'
 import './App.css'
 
-const createNewState = (state, actionType, actionData) => {
-  if(actionType === 'updateUser') {
+const reducer = (state, {type, payload}) => {
+  if(type === 'updateUser') {
     return {
       ...state,
       user: {
         ...state.user,
-        ...actionData
+        ...payload
       }
     }
   } else {
@@ -43,7 +43,7 @@ const UserModifier = () => {
   const {appState, setAppState} = useContext(appContext)
 
   const onChange = (e) => {
-    const newState = createNewState(appState, 'updateUser', {name: e.target.value})
+    const newState = reducer(appState, {type: 'updateUser', payload: {name: e.target.value}})
     setAppState(newState)
   }
   return (
