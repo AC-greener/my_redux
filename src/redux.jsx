@@ -12,7 +12,6 @@ const store = {
   subscribe: (fn) => {
     store.listener.push(fn)
     return () => {
-      console.log('remove listener')
       const index = store.listener.indexOf(fn)
       store.listener.splice(index, 1)
     }
@@ -39,16 +38,24 @@ const changed = (oldState, newState) => {
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => {
   return (props) => {
     const {state, setState} = useContext(appContext)
-    const dispatch = (action) => {
+    let dispatch = (action) => {
       setState(store.reducer(state, action))
     }
+    const prevDispatch = dispatch  //preDispatch只处理对象
+    dispatch = (action) => {
+      if(typeof action === 'function') {
+        action(dispatch)
+      } else {
+        prevDispatch(action)
+      }
+    }
+
     const [, update] = useState({})
     const data = mapStateToProps ? mapStateToProps(state) : {state}
     const dispatchers = mapDispatchToProps ? mapDispatchToProps(dispatch) : {dispatch}
     useEffect(() => {
       return store.subscribe(() => {
         const newData =  mapStateToProps ? mapStateToProps(store.state) : store.state
-        console.log(changed(data, newData))
         if(changed(data, newData)) {
           update({})
         }

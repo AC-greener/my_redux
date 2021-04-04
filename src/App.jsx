@@ -61,17 +61,36 @@ const User = ({user}) => {
   
   return <div>用户:{user.name}</div>
 }
+const ajax = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({data: '哈哈哈'})
+    }, 3000)
+  })
+}
+
+function fetchuser(updateUser) {
+  ajax('/api').then(res => {
+    updateUser({type: 'updateUser', payload: {name: res.data}})
+  })
+}
 
 
-const UserModifier = ({user, updateUser, children}) => {
+const UserModifier = ({user, dispatch, children}) => {
+  //实现dispatch(fetchUser)
+  // let preDispatch = dispatch
+  // var dispatch =(fn) => {
+  //   fn(preDispatch)
+  // } 
   const onChange = (e) => {
-    updateUser({name: e.target.value})
+    // fetchuser(dispatch)
+    dispatch(fetchuser) //fetchUser是一个函数action
   }
   console.log('UserModifier 执行了', Math.random())
   return (
       <div>
         {children}
-        <input value={user.name} onChange={onChange}/>
+        <button onClick={onChange}>获取user</button>
       </div>
   )
 }
@@ -99,7 +118,7 @@ const mapDispatchToProps = (dispatch) => {
     updateUser: (payload) => dispatch({type: 'updateUser', payload}),
   }
 }
-const UserModifierWrapper = connect(mapStateToProps, mapDispatchToProps)(UserModifier) 
+const UserModifierWrapper = connect(mapStateToProps, null)(UserModifier) 
 const UserWrapper = connect(mapStateToProps)(User)
 
 const BookWrapper = connect((state) => {
