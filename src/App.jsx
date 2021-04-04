@@ -11,13 +11,23 @@ const reducer = (state, {type, payload}) => {
         ...payload
       }
     }
+  } else if(type === 'updateBook') {
+    return {
+      ...state,
+      book: {
+        ...state.book,
+        ...payload
+      }
+    }
   } else {
     return state
   }
 }
 const initState = {
   user: { name: 'zhangsan', age: 18 },
-  book: [],
+  book: {
+    name: 'JS高级程序设计'
+  },
   movie: []
 }
 const store = createStore(initState, reducer)
@@ -28,6 +38,7 @@ const store = createStore(initState, reducer)
       <A/>
       <B/>
       <C/>
+      <BookWrapper />
     </Provider>
   )
 }
@@ -57,20 +68,33 @@ const UserModifier = ({state, dispatch, children}) => {
     dispatch({type: 'updateUser', payload: {name: e.target.value}})
   }
   console.log('UserModifier 执行了', Math.random()  )
-  console.log('state',  state)
   return (
       <div>
         {children}
         <input value={state.user.name} onChange={onChange}/>
+    
       </div>
+  )
+}
+
+const Book = ({state, dispatch}) => {
+  return (
+    <div>
+      Book 组件
+      <input value={state.book.name} onChange={(e) => {
+        dispatch({type: 'updateBook', payload: {name: e.target.value}})
+      }}/>
+    </div>
   )
 }
 
 const UserModifierWrapper = connect((state) => {
   return {
-    user: state.user
+    user: state.user,
+    book: state.book
   }
 })(UserModifier) 
 const UserWrapper = connect(null)(User)
+const BookWrapper = connect(null)(Book)
 
 export default App
