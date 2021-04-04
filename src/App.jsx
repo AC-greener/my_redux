@@ -31,7 +31,7 @@ const appContext = React.createContext(null)
 }
 
 const A = () => <section>A组件<UserWrapper/></section>
-const B = () => <section>B组件<UserModifierWrapper/></section>
+const B = () => <section>B组件<UserModifierWrapper x={'xxxxx'}/>内容</section>
 const C = () => <section>C组件</section>
 
 const User = ({state}) => {
@@ -39,24 +39,24 @@ const User = ({state}) => {
 }
 
 const connect = (Component) => {
-  const Wrapper = () => {
+  return (props) => {
     const {appState, setAppState} = useContext(appContext)
     const dispatch = (action) => {
       setAppState(reducer(appState, action))
     }
-    return <Component state={appState} dispatch={dispatch} />
+    return <Component {...props} state={appState} dispatch={dispatch} />
   }
-  return Wrapper
 }
 
 
 
-const UserModifier = ({state, dispatch}) => {
+const UserModifier = ({state, dispatch, children}) => {
   const onChange = (e) => {
     dispatch({type: 'updateUser', payload: {name: e.target.value}})
   }
   return (
       <div>
+        {children}
         <input value={state.user.name} onChange={onChange}/>
       </div>
   )
