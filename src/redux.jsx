@@ -1,12 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
 export const appContext = React.createContext(null)
 
-export const createStore = (initState, reducer) => {
-  store.state = initState
-  store.reducer = reducer
-  return store
-}
-
 const store = {
   state: undefined,
   setState(newState) {
@@ -24,6 +18,13 @@ const store = {
     }
   }
 }
+
+export const createStore = (initState, reducer) => {
+  store.state = initState
+  store.reducer = reducer
+  return store
+}
+
 const changed = (oldState, newState) => {
   let changed = false
   for (let key in oldState) {
@@ -34,6 +35,7 @@ const changed = (oldState, newState) => {
   return changed
 }
 
+//connect 先调用一次得到一个半成品
 export const connect = (mapStateToProps, mapDispatchToProps) => (Component) => {
   return (props) => {
     const {state, setState} = useContext(appContext)
