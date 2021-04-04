@@ -30,22 +30,25 @@ const appContext = React.createContext(null)
   )
 }
 
-const A = () => <section>A组件<User/></section>
-const B = () => <section>B组件<Wrapper/></section>
+const A = () => <section>A组件<UserWrapper/></section>
+const B = () => <section>B组件<UserModifierWrapper/></section>
 const C = () => <section>C组件</section>
 
-const User = () => {
-  const {appState} = useContext(appContext)
-  return <div>用户:{appState.user.name}</div>
+const User = ({state}) => {
+  return <div>用户:{state.user.name}</div>
 }
 
-const Wrapper = () => {
-  const {appState, setAppState} = useContext(appContext)
-  const dispatch = (action) => {
-    setAppState(reducer(appState, action))
+const createWrapper = (Component) => {
+  const Wrapper = () => {
+    const {appState, setAppState} = useContext(appContext)
+    const dispatch = (action) => {
+      setAppState(reducer(appState, action))
+    }
+    return <Component state={appState} dispatch={dispatch} />
   }
-  return <UserModifier state={appState} dispatch={dispatch} />
+  return Wrapper
 }
+
 
 
 const UserModifier = ({state, dispatch}) => {
@@ -58,5 +61,8 @@ const UserModifier = ({state, dispatch}) => {
       </div>
   )
 }
+
+const UserModifierWrapper = createWrapper(UserModifier)
+const UserWrapper = createWrapper(User)
 
 export default App
