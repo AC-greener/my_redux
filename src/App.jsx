@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react'
+import React, {useState, useContext, useEffect} from 'react'
 import './App.css'
 
 const reducer = (state, {type, payload}) => {
@@ -20,8 +20,12 @@ const store = {
     user: { name: 'zhangsan', age: 18 }
   },
   setState(newState) {
-    console.log(newState)
     store.state = newState
+    store.listener.map(fn => fn()) //setStore的时候通知订阅者
+  },
+  listener: [],
+  subscribe: (fn) => {
+    store.listener.push(fn)
   }
 }
 
@@ -60,9 +64,14 @@ const connect = (Component) => {
   return (props) => {
     const {state, setState} = useContext(appContext)
     const [, update] = useState({})
+    useEffect(() => {
+      store.subscribe(() => {
+        update({})
+      })  
+    }, [])
     const dispatch = (action) => {
       setState(reducer(state, action))
-      update({})
+      // update({})
     }
     return <Component {...props} state={state} dispatch={dispatch} />
   }
