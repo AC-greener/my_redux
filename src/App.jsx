@@ -1,6 +1,19 @@
 import React, {useState, useContext} from 'react'
 import './App.css'
 
+const createNewState = (state, actionType, actionData) => {
+  if(actionType === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...actionData
+      }
+    }
+  } else {
+    return state
+  }
+}
 
 const appContext = React.createContext(null)
 
@@ -30,16 +43,13 @@ const UserModifier = () => {
   const {appState, setAppState} = useContext(appContext)
 
   const onChange = (e) => {
-    appState.user.name = e.target.value
-    setAppState({...appState})
+    const newState = createNewState(appState, 'updateUser', {name: e.target.value})
+    setAppState(newState)
   }
   return (
-    <section>B组件
       <div>
         <input value={appState.user.name} onChange={onChange}/>
       </div>
-    </section>
-
   )
 }
 
