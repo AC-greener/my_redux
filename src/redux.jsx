@@ -36,3 +36,10 @@ export const connect = (Component) => {
     return <Component {...props} state={state} dispatch={dispatch} />
   }
 }
+export const Provider = ({store, children}) => {
+  return (
+    <appContext.Provider value={store}>
+      {children}
+    </appContext.Provider>
+  )
+}

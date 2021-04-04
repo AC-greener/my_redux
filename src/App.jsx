@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
 import './App.css'
-import { createStore,  connect, appContext} from './redux.jsx'
+import { createStore, connect, Provider} from './redux.jsx'
 
 const reducer = (state, {type, payload}) => {
   if(type === 'updateUser') {
@@ -15,17 +15,18 @@ const reducer = (state, {type, payload}) => {
     return state
   }
 }
-const store = createStore({
+const initState = {
   user: { name: 'zhangsan', age: 18 }
-}, reducer)
+}
+const store = createStore(initState, reducer)
  const App = () => {
 
   return (
-    <appContext.Provider value={store}>
+    <Provider store={store}>
       <A/>
       <B/>
       <C/>
-    </appContext.Provider>
+    </Provider>
   )
 }
 
