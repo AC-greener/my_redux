@@ -17,7 +17,21 @@ const store = {
   listener: [],
   subscribe: (fn) => {
     store.listener.push(fn)
+    return () => {
+      console.log('remove listener')
+      const index = store.listener.indexOf(fn)
+      store.listener.splice(index, 1)
+    }
   }
+}
+const changed = (oldState, newState) => {
+  let changed = false
+  for (let key in oldState) {
+    if (oldState[key] !== newState[key]) {
+      changed = true
+    }
+  }
+  return changed
 }
 
 export const connect = (selector) => (Component) => {
@@ -26,13 +40,16 @@ export const connect = (selector) => (Component) => {
     const [, update] = useState({})
     const data = selector ? selector(state) : state
     useEffect(() => {
-      store.subscribe(() => {
-        update({})
+      return store.subscribe(() => {
+        const newData =  selector ? selector(store.state) : store.state
+        console.log(changed(data, newData))
+        if(changed(data, newData)) {
+          update({})
+        }
       })  
     }, [])
     const dispatch = (action) => {
       setState(store.reducer(state, action))
-      // update({})
     }
     return <Component {...props} state={data} dispatch={dispatch} />
   }

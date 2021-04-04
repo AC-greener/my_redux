@@ -78,6 +78,7 @@ const UserModifier = ({state, dispatch, children}) => {
 }
 
 const Book = ({state, dispatch}) => {
+  console.log('book执行了')
   return (
     <div>
       Book 组件
@@ -91,10 +92,17 @@ const Book = ({state, dispatch}) => {
 const UserModifierWrapper = connect((state) => {
   return {
     user: state.user,
-    book: state.book
   }
 })(UserModifier) 
-const UserWrapper = connect(null)(User)
-const BookWrapper = connect(null)(Book)
+const UserWrapper = connect((state) => {
+  return {
+    user: state.user
+  }
+})(User)
+const BookWrapper = connect((state) => {
+  return {
+    book: state.book
+  }
+})(Book)
 
 export default App
