@@ -1,7 +1,23 @@
 import React, {useState, useContext, useEffect} from 'react'
 import './App.css'
-import {store, connect, appContext} from './redux.jsx'
+import { createStore,  connect, appContext} from './redux.jsx'
 
+const reducer = (state, {type, payload}) => {
+  if(type === 'updateUser') {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        ...payload
+      }
+    }
+  } else {
+    return state
+  }
+}
+const store = createStore({
+  user: { name: 'zhangsan', age: 18 }
+}, reducer)
  const App = () => {
 
   return (
